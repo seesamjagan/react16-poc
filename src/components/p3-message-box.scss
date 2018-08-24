@@ -1,0 +1,53 @@
+@import './shared';
+.p3-message-panel {
+    padding: 4px;
+    margin: 4px;
+    background-color: #FFF;
+    position: relative;
+    box-sizing: border-box;
+    .title {
+        position: relative;
+        padding-left: 4px;
+        color: #FFF;
+        font-weight: normal;
+        margin: 0;
+    }
+    hr {
+        margin: 1px 0 0 0;
+    }
+    .message {
+        color: #000;
+    }
+    .more {
+        border: dashed thin;
+        padding: 10px;
+    }
+}
+
+@mixin color-message-box($color) {
+    border: solid thin $color;
+    .title {
+        background-color: $color * 0.6;
+    }
+    .more {
+        color: $color * 0.5;
+        border-color: $color * 0.5;
+    }
+    box-shadow: 0px 0px 4px 2px rgba($color, 0.3);
+}
+
+.p3-message-panel.success {
+    @include color-message-box($success);
+}
+
+.p3-message-panel.error {
+    @include color-message-box($error);
+}
+
+.p3-message-panel.warn {
+    @include color-message-box($warn);
+}
+
+.p3-message-panel.info {
+    @include color-message-box($info);
+}

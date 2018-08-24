@@ -1,0 +1,39 @@
+$app-font-family: 'Trebuchet MS',
+'Lucida Sans Unicode',
+'Lucida Grande',
+'Lucida Sans',
+Arial,
+sans-serif;
+
+/* Colors */
+
+
+/* State */
+
+$success: rgb(12, 114, 12);
+$error: red;
+$warn: orange;
+$info: rgb(83, 198, 236);
+
+/* Font */
+
+$primary-font-color: #FF6699;
+$secondry-font-color: #993366;
+
+/* BG */
+
+$primary-bg-color: #70b6f0;
+$secondary-bg-color: #939393;
+$app-header-height: 40px;
+
+/* Mixins */
+
+%p3-a {
+    color: #E6E6E6;
+    text-decoration: none;
+    margin: 4px 4px;
+    padding: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+}

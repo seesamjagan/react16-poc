@@ -1,0 +1,21 @@
+.p3-system div {
+    line-height: 1;
+    margin: 1em 0;
+}
+
+.p3-system .each-with-inline-block,
+.p3-system .each-with-inline-block div {
+    display: inline-block;
+    width: 100%;
+}
+
+.p3-system .each-with-float,
+.p3-system .each-with-float div {
+    float: left;
+    width: 100%;
+}
+
+.p3-system .each-with-overflow-hidden,
+.p3-system .each-with-overflow-hidden div {
+    overflow: hidden;
+}

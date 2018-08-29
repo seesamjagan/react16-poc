@@ -18,16 +18,38 @@
     .message {
         color: #000;
     }
+    .children {
+        position: relative;
+    }
     .more {
         border: dashed thin;
         padding: 10px;
+        p {
+            margin: 0;
+        }
     }
 }
 
-@mixin color-message-box($color) {
+$message-icon-size: 24px;
+@mixin color-message-box($color, $content) {
     border: solid thin $color;
     .title {
         background-color: $color * 0.6;
+    }
+    .message {
+        p::before {
+            content: $content;
+            border: solid thin;
+            text-align: center;
+            display: inline-block;
+            border-radius: $message-icon-size;
+            width: $message-icon-size;
+            height: $message-icon-size;
+            margin-right: 4px;
+            color: #FFF;
+            background-color: $color;
+            box-shadow: 0px 0px 3px 2px rgba($color, 0.3);
+        }
     }
     .more {
         color: $color * 0.5;
@@ -37,17 +59,21 @@
 }
 
 .p3-message-panel.success {
-    @include color-message-box($success);
+    @include color-message-box($success, "\002714");
 }
 
 .p3-message-panel.error {
-    @include color-message-box($error);
+    @include color-message-box($error, "\002716");
 }
 
 .p3-message-panel.warn {
-    @include color-message-box($warn);
+    @include color-message-box($warn, "\0026A0");
 }
 
 .p3-message-panel.info {
-    @include color-message-box($info);
+    @include color-message-box($info, "\002139");
+}
+
+.p3-message-panel.question {
+    @include color-message-box($question, "\001F4AD");
 }

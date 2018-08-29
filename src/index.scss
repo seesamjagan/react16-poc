@@ -26,6 +26,7 @@
     width: 32px;
     height: 32px;
     text-indent: -1000px;
+    background-color: #FFF;
 }
 
 .p3-module {
@@ -84,5 +85,53 @@
     }
     to {
         opacity: 1.0;
+    }
+}
+
+$p3-popup-title-bar-height: 30px;
+$p3-popup-footer-bar-height: 30px;
+.model-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    .p3-model-holder {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color: #333, $alpha: 0.50);
+        .p3-model {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            .p3-popup {
+                position: relative;
+                margin: 0px auto;
+                min-height: 180px;
+                max-height: 100%;
+                height: inherit;
+                max-width: 100%;
+                .p3-popup-title-bar {
+                    height: $p3-popup-title-bar-height;
+                    background-color: rgba($color: #333, $alpha: 0.50);
+                }
+                .p3-popup-body-section {
+                    position: relative;
+                    margin: 0 auto;
+                    padding: 4px;
+                    overflow: auto;
+                    height: calc(100% - 30px - 2px);
+                    width: 100%;
+                }
+                .with-footer {
+                    height: calc(100% - 60px - 2px);
+                }
+                .p3-popup-footer-bar {
+                    height: $p3-popup-footer-bar-height;
+                    background-color: #1e5fa0;
+                    display: inline-block;
+                }
+            }
+        }
     }
 }

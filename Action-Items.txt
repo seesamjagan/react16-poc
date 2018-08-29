@@ -1,21 +1,22 @@
-Followings are the "features" which we are planning to "USE" in this poc.
+Followings are the "features" which we are planning to "USE/TRY" in this poc.
 1. Router ✅
 2. Redux (with middleware) ⏳
 3. CSS Pre-Processor ✅ (used SCSS)
-4. fetch & promise ⏲
+4. fetch & promise ✅
 5. React-Form ⏲
 6. Modules/Code Splitting/AMD/locale ✅
 7. ErrorBoundries ✅
 8. Router in Plugin ⏲
 9. context API for Plugin vs Standalone ⏲
-10.Base Module with Lang✅, Scrollbar⏲, ErrorBoundries ✅
-11.Base Component with Lang⏲, Scrollbar⏲, ErrorBoundries⏲
-12.Base popup with Lang⏲, Scrollbar⏲, ErrorBoundries⏲
+10.Base Module with Lang✅, ErrorBoundries ✅
+11.Base Component with Lang⏲, ErrorBoundries⏲
+12.Base popup with Lang⏲, ErrorBoundries⏲
 13.How are we going to load ADM popup's (using redux action or event-pool class?) ??? ⏲
-14. use codemod script for changeing/update depcriated lifecycle hooks (for React 16.x changes)
-15. What is Portal? Can we make use of if for AMD popup ?
-
-
+14. use codemod script for changing/update depcriated lifecycle hooks (for React 16.x changes) ⏲
+15. Portals for Popup ✅, Toaster ⏲
+16. React Transitions ⏲
+17. Scrollbar component ⏲
+18. Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment). ⏲
 
 Ref Links
 

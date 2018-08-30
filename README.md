@@ -4,12 +4,12 @@ poc app on react js 16.x with routing, lazy loading, localization, cra, scss
 Mission is to implement the following concepts in the application
 
 
-- [x] Router ✅ (user react-router)- [x]
+- [x] Router ✅ (used react-router)
 - [ ] Redux (with middleware) ⏳ 
 - [x] CSS Pre-Processor ✅ (used SCSS)
 - [x] fetch & promise ✅
 - [ ] React-Form ⏲
-- [x] Modules/Code Splitting/AMD/locale ✅ (user react-loadable)
+- [x] Modules/Code Splitting/AMD/locale ✅ (used react-loadable)
 - [x] ErrorBoundries ✅
 - [ ] Router in Plugin ⏲
 - [ ] context API for Plugin vs Standalone ⏲
@@ -22,6 +22,7 @@ Mission is to implement the following concepts in the application
 - [ ] React Transitions ⏲
 - [ ] Scrollbar component ⏲
 - [x] Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment).✅ 
+- [ ] Load on-demand AMD package (in P3ModuleBase like popup definitions, when demanded) ⏲
 
 
 Ref Links

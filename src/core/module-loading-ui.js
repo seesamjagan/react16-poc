@@ -11,9 +11,9 @@ export const ModuleLoadingUI = (props) => {
         console.error('ModuleLoadingUI error props', props);
         return (
             <div>
-                <span>{lm.getString(P3_STRINGS, 'amd.error', [props.name])}</span>
+                <p>{lm.getString(P3_STRINGS, 'amd.error', [props.name])}</p>
                 <button onClick={props.retry}>{lm.getString(P3_STRINGS, 'label.reload')}</button>
-                <span>{lm.getString(P3_STRINGS, 'see.console.error')}</span>
+                <p>{lm.getString(P3_STRINGS, 'see.console.error')}</p>
             </div>
         );
     } else if (props.timedOut) {

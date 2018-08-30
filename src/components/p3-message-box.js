@@ -17,14 +17,14 @@ const P3ActionButton = ({ action, onAction }) => {
     </li>
 }
 
-export const P3MessageBox = ({ title, message, more, type = "info", children, actions, onAction, showHelp, onHelp, helpTitle, showClose, onClose }) => {
+export const P3MessageBox = ({ title, message, more, type = "info", children, actions, onAction, showHelp, onHelp, helpTitle, showClose }) => {
 
     const showAction = actions.length > 0;
     return (
         <div data-auto-id={title} className={"p3-message-panel " + type}>
             <header>
                 <h2 className="title">{title}</h2>
-                {showClose && <span className='close-icon' onClick={onClose}></span>}
+                {showClose && <span className='close-icon' onClick={onAction}></span>}
             </header>
             {message && <div className="message"><p>{message}</p></div>}
             {children && <div className={"children" + (showAction ? '' : ' no-action')}>{children}</div>}
@@ -60,7 +60,6 @@ P3MessageBox.propTypes = {
     onHelp: PropTypes.func,
     helpTitle: PropTypes.string,
     showClose: PropTypes.bool,
-    onClose: PropTypes.func,
 }
 
 P3MessageBox.defaultProps = {
@@ -71,8 +70,7 @@ P3MessageBox.defaultProps = {
     showHelp: false,
     onHelp: null,
     helpTitle: null,
-    showClose: false,
-    onClose: null,
+    showClose: false
 }
 
 export default P3MessageBox;

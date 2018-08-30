@@ -16,7 +16,7 @@ Followings are the "features" which we are planning to "USE/TRY" in this poc.
 15. Portals for Popup ✅, Toaster ⏲
 16. React Transitions ⏲
 17. Scrollbar component ⏲
-18. Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment). ⏲
+18. Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment). ✅
 
 Ref Links
 

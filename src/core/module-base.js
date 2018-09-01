@@ -31,22 +31,22 @@ export class ReactModuleBase extends Component {
             uiErrorInfo: null,
             isAMDReady: true,
             isAMDError: false,
+            isInjectingAMD: false,
             amd: null,
         };
         depends = depends || props.depends;
         if (depends && depends.length) {
             this.depends = depends;
-            this.loadDepends(depends);
+            this.preLoadAMD(depends);
         }
     }
 
-    loadDepends = (depends = []) => {
-        const state = this.state;
-        state.isAMDReady = false;
-
+    load = (depends, onSuccessCallback) => {
         const amd = this[__loader__] = (this[__loader__] || new ReactModuleLoader());
 
-        let isAMDError = false, isAMDReady = false;
+        let isAMDError = false, isAMDReady = false, isAMDInjectionError = false, isAMDInjected = false;
+
+        let { isInjectingAMD } = this.state;
 
         return Promise.all(depends.map(payload => {
             if (payload instanceof BundleVo) {
@@ -60,10 +60,16 @@ export class ReactModuleBase extends Component {
             }
         })).then(defs => {
             isAMDReady = true;
+            if (isInjectingAMD) {
+                isAMDInjected = true;
+            }
             return defs;
         }).catch(error => {
             //console.error(error);
             isAMDError = true;
+            if (isInjectingAMD) {
+                isAMDInjectionError = true;
+            }
             return error;
         }).then(results => {
             let errors = results.filter(result => result instanceof Error);
@@ -71,18 +77,49 @@ export class ReactModuleBase extends Component {
             if (errors.length > 0) {
                 console.error(...errors);
             } else {
-                this.onAMDLoadComplete();
+                onSuccessCallback();
             }
-            this.setState({ isAMDError, isAMDReady, amd });
+            if (isInjectingAMD) {
+                isInjectingAMD = false;
+            }
+            this.setState({ isAMDError, isAMDReady, amd, isAMDInjectionError, isAMDInjected, isInjectingAMD });
+
             return results;
         });
     }
 
+    preLoadAMD = (depends = []) => {
+        const state = this.state;
+        state.isAMDReady = false;
+
+        return this.load(depends, () => this.onAMDLoadComplete());
+    }
+
+    injectAMD = (depends, onAMDInjected = null) => {
+        if (depends) {
+            depends = Array.isArray(depends) ? depends : [depends];
+        } else {
+            return false;
+        }
+        this.setState({
+            isInjectingAMD: true,
+        }, () => this.load(depends, onAMDInjected || (() => this.onAMDInjected())));
+        return true;
+    }
+
     /**
      * override this method in the sub class to initiate actions once all
-     * the AMD dependencies are loaded successfully.
+     * the AMD are loaded successfully.
      */
     onAMDLoadComplete() {
+        // override this method in the sub class
+    }
+
+    /**
+    * override this method in the sub class to initiate actions once all
+    * the AMD are injected successfully.
+    */
+    onAMDInjected() {
         // override this method in the sub class
     }
 
@@ -111,7 +148,7 @@ export class ReactModuleBase extends Component {
 
         return (<div className='react-module'>
             <span>{dependencyError}</span>
-            <button onClick={() => this.loadDepends(this.depends)}>{reload}</button>
+            <button onClick={() => this.preLoadAMD(this.depends)}>{reload}</button>
             <span>{additionalInfo}</span>
         </div>);
     }
@@ -145,16 +182,16 @@ export class ReactModuleBase extends Component {
 
     componentDidCatch(error, info) {
         // Display fallback UI
-        this.setState({ hasUIError: true, uiErrorInfo: {error, info} });
-        
+        this.setState({ hasUIError: true, uiErrorInfo: { error, info } });
+
         // You can also log the error to an error reporting service
         //logErrorToMyService(error, info);
-      }
-    
+    }
+
 
     render() {
-        
-        const {hasUIError, isAMDReady, isAMDError, uiErrorInfo} = this.state;
+
+        const { hasUIError, isAMDReady, isAMDError, uiErrorInfo } = this.state;
 
         if (isAMDError) {
             return this.getAMDErrorUI();
@@ -162,7 +199,7 @@ export class ReactModuleBase extends Component {
         if (!isAMDReady) {
             return this.getAMDLoadingUI();
         }
-        if(hasUIError) {
+        if (hasUIError) {
             return this.getUIErrorFallbackUI(uiErrorInfo.error, uiErrorInfo.info);
         }
         return <ErrorBoundary>{this.renderUI()}</ErrorBoundary>
@@ -206,7 +243,7 @@ export class P3ModuleBase extends ReactModuleBase {
 
         return (<div className='p3-module'>
             <span>{dependencyError}</span>
-            <button onClick={() => this.loadDepends(this.depends)}>{reload}</button>
+            <button onClick={() => this.preLoadAMD(this.depends)}>{reload}</button>
             <span>{additionalInfo}</span>
         </div>);
     }

@@ -3,7 +3,9 @@ import * as core from './../../core';
 import * as popupAMD from './../../popups';
 import './configure.css';
 
-const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload, popupAMD.deleteVolumePopupAMDPayload];
+// TODO :: we should add a feature to load the AMD ON-DEMAND when needed like loading popup definitions only when they needed instead of loading at the begining. 
+// pro's of this approach is, main view/module loads fast, amd loaded only when needed. if, when one amd failed load, we won't break the main view/module being rendered.
+const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
 export default class ConfiguredModule extends core.P3ModuleBase {
     constructor(props, context) {
@@ -26,10 +28,23 @@ export default class ConfiguredModule extends core.P3ModuleBase {
         
     }
 
+    onAMDInjected() {
+
+    }
+
     onDeleteVolumeClick = e => {
+        
+        if(this.amd.deleteVolumePopup) {
+            this.showDeleteVolumePopup();
+        } else {
+            this.injectAMD([popupAMD.deleteVolumePopupAMDPayload], this.showDeleteVolumePopup);
+        }
+    }
+
+    showDeleteVolumePopup = () => {
         this.setState({
             showDeleteVolumePopup: true,
-        })
+        });
     }
 
     onDeleteVolumePopupClose = isActionComplete => {
@@ -60,10 +75,9 @@ export default class ConfiguredModule extends core.P3ModuleBase {
         console.log(new this.amd.actions.FSA('configure action'));
         console.log(new this.amd.model.BaseVo());
 
-        const { showDeleteVolumePopup, showAlert, alertMessage, alertTitle, alertType } = this.state;
+        const { showDeleteVolumePopup, showAlert, alertMessage, alertTitle, alertType, isInjectingAMD, /*isAMDInjected,*/ isAMDInjectionError } = this.state;
 
-        const { P3DeleteVolumePopup } = this.amd.deleteVolumePopup;
-        const { P3PopUp } = this.amd.components;
+        const { P3PopUp, P3MessageBox } = this.amd.components;
 
         return <div className="p3-module p3-configure">
             <header>
@@ -76,8 +90,14 @@ export default class ConfiguredModule extends core.P3ModuleBase {
                     {alertMessage}
                 </P3PopUp>}
 
+                {(isInjectingAMD || isAMDInjectionError) && <P3PopUp width="250px" height="100px" 
+                    type={isInjectingAMD ? P3MessageBox.INFO : P3MessageBox.ERROR} 
+                    title={'Injecting AMD..'} actions={isInjectingAMD ? [] : ['ok']} onAction={this.onAlertAction}>
+                    {isInjectingAMD ? 'Please Wait...' : 'Error Injecting AMD!'}
+                </P3PopUp>}
+
             </section>
-            {showDeleteVolumePopup && <P3DeleteVolumePopup onClose={this.onDeleteVolumePopupClose} />}
+            {showDeleteVolumePopup && <this.amd.deleteVolumePopup.P3DeleteVolumePopup onClose={this.onDeleteVolumePopupClose} />}
         </div>
     }
 }

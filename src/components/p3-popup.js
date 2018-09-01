@@ -7,7 +7,7 @@ import P3MessageBox from './p3-message-box';
 
 import './p3-popup.css';
 
-const TOASTER_ROOT = 'toaster-root';
+// const TOASTER_ROOT = 'toaster-root';
 const MODEL_ROOT = 'model-root';
 
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as core from './../../core';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];

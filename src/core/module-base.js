@@ -25,8 +25,8 @@ const __loader__ = Symbol('__loader__');
 export class ReactModuleBase extends Component {
 
     constructor(props, context = null, depends = null) {
-        super(props);
-        this.state = {
+        super(props, context);
+        let state = {
             hasUIError: false,
             uiErrorInfo: null,
             isAMDReady: true,
@@ -37,17 +37,14 @@ export class ReactModuleBase extends Component {
         depends = depends || props.depends;
         if (depends && depends.length) {
             this.depends = depends;
+            state.isAMDReady = false;
             this.preLoadAMD(depends);
         }
+        this.state = state;
     }
 
-    load = (depends, onSuccessCallback) => {
+    load = (depends) => {
         const amd = this[__loader__] = (this[__loader__] || new ReactModuleLoader());
-
-        let isAMDError = false, isAMDReady = false, isAMDInjectionError = false, isAMDInjected = false;
-
-        let { isInjectingAMD } = this.state;
-
         return Promise.all(depends.map(payload => {
             if (payload instanceof BundleVo) {
                 // if the dependency is a locale bundle
@@ -59,52 +56,54 @@ export class ReactModuleBase extends Component {
                 throw new Error('dependency payload should be either BundleVo or ModuleVo');
             }
         })).then(defs => {
-            isAMDReady = true;
-            if (isInjectingAMD) {
-                isAMDInjected = true;
-            }
             return defs;
-        }).catch(error => {
-            //console.error(error);
-            isAMDError = true;
-            if (isInjectingAMD) {
-                isAMDInjectionError = true;
-            }
-            return error;
-        }).then(results => {
-            let errors = results.filter(result => result instanceof Error);
-            isAMDError = errors.length > 0 || isAMDError;
-            if (errors.length > 0) {
-                console.error(...errors);
-            } else {
-                onSuccessCallback();
-            }
-            if (isInjectingAMD) {
-                isInjectingAMD = false;
-            }
-            this.setState({ isAMDError, isAMDReady, amd, isAMDInjectionError, isAMDInjected, isInjectingAMD });
-
-            return results;
+        }).catch(errors => {
+            console.log('Error Loading AMD, %O', errors);
+            return errors;
         });
     }
 
     preLoadAMD = (depends = []) => {
-        const state = this.state;
-        state.isAMDReady = false;
-
-        return this.load(depends, () => this.onAMDLoadComplete());
+        return this.load(depends)
+            .then(results => {
+                let errors = results.filter(result => result instanceof Error);
+                let isAMDError = errors.length > 0;
+                let isAMDReady = !isAMDError;
+                if (errors.length > 0) {
+                    console.error(...errors);
+                } else {
+                    this.onAMDLoadComplete();
+                }
+                this.setState({ isAMDError, isAMDReady });
+                return results;
+            });
     }
 
     injectAMD = (depends, onAMDInjected = null) => {
         if (depends) {
             depends = Array.isArray(depends) ? depends : [depends];
         } else {
-            return false;
+            // TODO :: check this use-case
+            return  Promise.resolve([new Error('missing dependency details')]);
         }
         this.setState({
             isInjectingAMD: true,
-        }, () => this.load(depends, onAMDInjected || (() => this.onAMDInjected())));
-        return true;
+        });
+        return this.load(depends)
+            .then(results => {
+                let errors = results.filter(result => result instanceof Error);
+                let isAMDInjectionError = errors.length > 0;
+                let isAMDInjected = !isAMDInjectionError;
+                if (errors.length > 0) {
+                    console.error(...errors);
+                } else {
+                    onAMDInjected && onAMDInjected();
+                    this.onAMDInjected();
+                }
+                this.setState({ isAMDInjectionError, isAMDInjected, isInjectingAMD: false });
+
+                return results;
+            });
     }
 
     /**

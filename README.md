@@ -51,3 +51,6 @@ WebScoket: https://medium.com/@martin.sikora/node-js-websocket-simple-chat-tutor
 SCSS: 
 https://sass-lang.com/guide
 https://robots.thoughtbot.com/controlling-color-with-sass-color-functions
+
+SQLite: 
+http://www.sqlitetutorial.net/sqlite-nodejs/

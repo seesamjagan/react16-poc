@@ -27,6 +27,10 @@ export class AddTodoForm extends core.P3ModuleBase {
         this.state = Object.assign(this.state, {
             actions: [{ label: 'Add', enabled: false }, { label: 'Reset', enabled: true }],
             todos: [],
+            srcTodos: [],
+            showError: false,
+            errorMessage: '',
+            errorTitle: '',
         });
 
         this.newTodoInput = React.createRef();
@@ -52,18 +56,13 @@ export class AddTodoForm extends core.P3ModuleBase {
                 this.resetForm();
                 break;
             default:
-                // Do nothing!
+            // Do nothing!
         }
     }
 
     addNewTodo = () => {
-        this.setState(({ todos, newTodoItem }, props) => {
-            todos = [...todos, { label: newTodoItem }];
-
-            // TODO :: push it in DB
-
-            return { todos };
-        }, this.resetForm);
+        this.addNewTodoInDB(this.state.newTodoItem);
+        this.resetForm();
     }
 
     onNewTodoKeyUp = event => {
@@ -80,9 +79,52 @@ export class AddTodoForm extends core.P3ModuleBase {
 
     componentDidMount() {
         //fetch('/todo')
+        this.loadTODO();
+    }
+
+    loadTODO = () => {
         core.Fetch.post('/todo')
             //.then(res => res.json())
-            .then(response => this.setState({ todos: response.status ? response.data : [] }));
+            .then(response => {
+                let message = response.status ? null : response.message;
+                let todos = response.status ? response.data : [];
+                this.setState({ todos, message, srcTodos: [...todos] });
+            });
+    }
+
+    onChange = (e, todo) => {
+        core.Fetch.post('/todo/update', { ...todo, status: e.target.value })
+            .then(result => {
+                if (result.status) {
+                    this.loadTODO();
+                } else {
+                    this.setState({
+                        showError: true, errorMessage: result.message, errorTitle: 'Update Task'
+                    });
+                }
+            });
+    }
+
+    addNewTodoInDB = (newTodoItem) => {
+        core.Fetch.post('/todo/add', { label: newTodoItem, status: TODO_STATUS.OPEN })
+        .then(result => {
+            if (result.status) {
+                this.loadTODO();
+            } else {
+                this.setState({
+                    showError: true, errorMessage: result.message, errorTitle: 'Add New'
+                });
+            }
+        });
+    }
+
+    onFilterChange = e => {
+        let status = +e.target.value;
+        this.setState({
+            todos: this.state.srcTodos.filter(todo => {
+                return status === -1 || (+todo.status === status);
+            })
+        })
     }
 
     renderUI() {
@@ -90,9 +132,14 @@ export class AddTodoForm extends core.P3ModuleBase {
             <div>
                 <this.amd.components.P3MessageBox title="Add Todo" message="Add a new Todo Action Item." actions={this.state.actions} onAction={this.onAddTodoFormAction}>
                     <div>
+                        <fieldset>
+                            <FilterForm onChange={this.onFilterChange} count={this.state.todos.length} total={this.state.srcTodos.length} />
+                        </fieldset>
                         <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
                             <div>
-                                {this.state.todos.map((todo, key) => <TodoItem key={key} todo={todo} />)}
+                                {this.state.message && <div>{this.state.message}</div>}
+                                {this.state.todos.map((todo) => <TodoItem key={todo.id} todo={todo} onChange={(e) => this.onChange(e, todo)} />)}
+                                {this.state.todos.length === 0 && <div>Nothing to show!</div>}
                             </div>
                         </fieldset>
                         <fieldset>
@@ -104,11 +151,42 @@ export class AddTodoForm extends core.P3ModuleBase {
                         </fieldset>
                     </div>
                 </this.amd.components.P3MessageBox>
+
+                {
+                    this.state.showError && <this.amd.components.P3PopUp
+                        title={this.state.errorTitle}
+                        type={this.amd.components.P3MessageBox.ERROR}>
+                        {this.state.errorMessage}
+                    </this.amd.components.P3PopUp>
+                }
+
             </div>
         );
     }
 }
 
-const TodoItem = ({ todo }) => <div className='todo-item'>{TODO_STATUS_ICON[todo.status]} - {todo.label}</div>
+
+const FilterForm = ({ onChange, count, total }) => {
+    return <div className='todo-item'>
+        <span>Show </span>
+        <select defaultValue='-1' onChange={onChange}>
+            <option value="-1">All</option>
+            {Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)}
+        </select>
+        <spn> Showing: </spn>
+        <span>{count}</span>
+        <span> of </span>
+        <span>{total}</span>
+    </div>
+}
+
+const TodoItem = ({ todo, onClick, onChange }) => {
+    return <div className='todo-item' onClick={onClick}>
+        <select defaultValue={todo.status} onChange={onChange}>
+            {Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)}
+        </select> 
+         {todo.label} -Created On {new Date(+todo.ts).toDateString()}
+    </div>
+}
 
 export default AddTodoForm;

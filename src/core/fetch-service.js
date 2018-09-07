@@ -80,7 +80,7 @@ export class Fetch {
                 }
                 return response.json();
             }
-            throw new Error(`Found Unknow Network error with ${response.status}: ${response.statusText} status code.`);
+            throw new Error(`Got Error with ${response.status}: ${response.statusText} status code.`);
         })
         .catch(error=>error)
         .then(resultOrError=>{

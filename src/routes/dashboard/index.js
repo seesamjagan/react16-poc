@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as core from '../../core';
+import { AddTodoForm } from './add-todo-form';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
@@ -44,6 +45,8 @@ export default class DashboardModule extends core.P3ModuleBase {
                 <h2>{this.lang('dummy.info')}</h2>
             </header>
             <section>
+
+                <AddTodoForm />
 
                 <P3MessageBox title="Take Action!" message="array of object actions" actions={[{ label: 'Ok', className: 'ok' }, { label: 'cancel', className: 'cancel' }, { label: 'don\'t do', className: 'cancel', enabled: false }]} onAction={this.onAction} />
                 <P3MessageBox title="Take Action!" actions={['Yes', 'No']} onAction={this.onAction} showHelp showClose>

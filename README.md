@@ -22,7 +22,7 @@ Mission is to implement the following concepts in the application
 - [ ] React Transitions ⏲
 - [ ] Scrollbar component ⏲
 - [x] Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment).✅ 
-- [ ] Load on-demand AMD package (in P3ModuleBase like popup definitions, when demanded) ⏲
+- [x] Load on-demand AMD package (in P3ModuleBase like popup definitions, when demanded) ✅
 
 
 Ref Links

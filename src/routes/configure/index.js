@@ -7,7 +7,7 @@ import './configure.css';
 // pro's of this approach is, main view/module loads fast, amd loaded only when needed. if, when one amd failed load, we won't break the main view/module being rendered.
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
-export default class ConfiguredModule extends core.P3ModuleBase {
+export default class ConfiguredModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps.concat(new core.BundleVo('p3-configure', 'en_US')));
         this.name = "Configure UI";

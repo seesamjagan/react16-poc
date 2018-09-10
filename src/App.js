@@ -12,7 +12,7 @@ const AppHeader = ({ navItems, navBar:P3NavBar }, context) => (
   </header>
 );
 
-class App extends core.P3ModuleBase {
+class App extends core.P3ComponentBase {
 
   constructor(props, context) {
     super(props, context, [new core.BundleVo('p3-strings', 'en_US'), core.componentsAMDPayload]);

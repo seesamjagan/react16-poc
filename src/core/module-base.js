@@ -144,7 +144,7 @@ export class ReactModuleBase extends Component {
     onAMDInjectError() {
         // override this method in the sub class
     }
-    
+
     /**
      * asynchronous module definition
      */
@@ -235,7 +235,7 @@ export class ReactModuleBase extends Component {
 
 const P3_STRINGS = 'p3-strings';
 
-export class P3ModuleBase extends ReactModuleBase {
+export class P3ComponentBase extends ReactModuleBase {
     constructor(props, context = null, depends = null) {
         super(props, context, depends);
     }
@@ -287,4 +287,4 @@ export class P3ModuleBase extends ReactModuleBase {
     }
 }
 
-export default P3ModuleBase;
+export default P3ComponentBase;

@@ -20,7 +20,7 @@ const routeConfig = [
     },
 ];
 
-export default class SecurityQoSModule extends core.P3ModuleBase {
+export default class SecurityQoSModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, [new core.BundleVo(BUNDLE_NAME, 'en_US'), ...deps]);
         this.state = Object.assign(this.state, {

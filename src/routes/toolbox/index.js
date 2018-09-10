@@ -17,7 +17,7 @@ const routeConfig = [
     {path: getPath(ROUTES.CONNECTION_MAP), component: ()=><div>Connection Map View</div>}
 ];
 
-export default class ToolboxModule extends core.P3ModuleBase {
+export default class ToolboxModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, [new core.BundleVo('p3-toolbox', 'en_US'), ...deps]);
         this.state = Object.assign(this.state, {

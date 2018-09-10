@@ -19,7 +19,7 @@ const routeConfig = [
     {path: getPath(ROUTES.CLOUD), component: ()=><div className="p3-show-me">Cloud View</div>},
 ];
 
-export default class ProvisioningModule extends core.P3ModuleBase {
+export default class ProvisioningModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps.concat(new core.BundleVo('p3-provisioning', 'en_US')));
         this.state = Object.assign(this.state, {

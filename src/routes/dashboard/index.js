@@ -5,7 +5,7 @@ import { AddTodoForm } from './add-todo-form';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
-export default class DashboardModule extends core.P3ModuleBase {
+export default class DashboardModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps.concat(new core.BundleVo('p3-dashboard', 'en_US')));
         this.state = Object.assign(this.state, {

@@ -5,7 +5,7 @@ import './login.css';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload];
 
-export default class LoginModule extends core.P3ModuleBase {
+export default class LoginModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps);
         this.state = Object.assign(this.state, {

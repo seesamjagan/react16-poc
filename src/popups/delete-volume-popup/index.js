@@ -3,7 +3,7 @@ import * as core from './../../core';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
-export class P3DeleteVolumePopup extends core.P3ModuleBase {
+export class P3DeleteVolumePopup extends core.P3ComponentBase {
 
     constructor(props, context) {
         super(props, context, [new core.BundleVo('p3-delete-volume-popup', 'en_US'), ...deps])

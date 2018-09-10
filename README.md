@@ -13,10 +13,9 @@ Mission is to implement the following concepts in the application
 - [x] ErrorBoundries ✅
 - [ ] Router in Plugin ⏲
 - [ ] context API for Plugin vs Standalone ⏲
-- [x] Base Module with Lang✅, ErrorBoundries ✅
-- [ ] Base Component with Lang⏲, ErrorBoundries⏲
-- [ ] Base popup with Lang⏲, ErrorBoundries⏲
-- [ ] How are we going to load ADM popup's (using redux action or event-pool class?) ??? ⏲
+- [x] Base Component with Lang✅, ErrorBoundries ✅
+- [x] Base popup with Lang✅, ErrorBoundries✅
+- [ ] How are we going to load ADM popup's (using redux action or event-pool class?)? ⏲
 - [ ] use codemod script for changing/update depcriated lifecycle hooks (for React 16.x canges) ⏲
 - [ ] Portals for Popup ✅, Toaster ⏲
 - [ ] React Transitions ⏲

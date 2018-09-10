@@ -19,7 +19,7 @@ const TODO_STATUS_ICON = {
     4: "❌",
 }
 
-export class AddTodoForm extends core.P3ModuleBase {
+export class AddTodoForm extends core.P3ComponentBase {
 
     constructor(props, context) {
         super(props, context, [...deps]);

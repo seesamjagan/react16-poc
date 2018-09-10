@@ -38,7 +38,7 @@ const getDefaultRouteTo = location => ({
     state: { from: location }
 });
 
-export default class DataServiceModule extends core.P3ModuleBase {
+export default class DataServiceModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps.concat(new core.BundleVo(BUNDLE_NAME, 'en_US')));
         this.name = this.$lang('amd.dataServices');

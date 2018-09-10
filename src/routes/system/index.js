@@ -4,7 +4,7 @@ import './system.css';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload];
 
-export default class SystemModule extends core.P3ModuleBase {
+export default class SystemModule extends core.P3ComponentBase {
     constructor(props, context) {
         super(props, context, deps.concat(new core.BundleVo('p3-system')));
         this.state = Object.assign(this.state, {

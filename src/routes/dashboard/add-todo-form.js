@@ -39,6 +39,7 @@ export class AddTodoForm extends core.P3ModuleBase {
     onAMDLoadComplete() {
         // All Dependencise loaded.
         // Best place to start the business logic.
+        this.loadTODO();
     }
 
     onNewTodoItemChange = event => {
@@ -77,11 +78,6 @@ export class AddTodoForm extends core.P3ModuleBase {
         this.newTodoInput.current.focus();
     }
 
-    componentDidMount() {
-        //fetch('/todo')
-        this.loadTODO();
-    }
-
     loadTODO = () => {
         core.Fetch.post('/todo')
             //.then(res => res.json())
@@ -95,7 +91,7 @@ export class AddTodoForm extends core.P3ModuleBase {
             });
     }
 
-    onChange = (e, todo) => {
+    onAIStatusChange = (e, todo) => {
         core.Fetch.post('/todo/update', { ...todo, status: +e.target.value })
             .then(result => {
                 if (result.status) {
@@ -150,7 +146,7 @@ export class AddTodoForm extends core.P3ModuleBase {
                         <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
                             <div>
                                 {message && <div>{message}</div>}
-                                {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onChange={(e) => this.onChange(e, todo)} />)}
+                                {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onChange={(e) => this.onAIStatusChange(e, todo)} />)}
                                 {visibleAI.length === 0 && <div>Nothing to show!</div>}
                             </div>
                         </fieldset>

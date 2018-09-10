@@ -84,6 +84,7 @@ export class ReactModuleBase extends Component {
                 let isAMDReady = !isAMDError;
                 if (errors.length > 0) {
                     console.error(...errors);
+                    this.onAMDLoadError();
                 } else {
                     this.onAMDLoadComplete();
                 }
@@ -109,6 +110,7 @@ export class ReactModuleBase extends Component {
                 let isAMDInjected = !isAMDInjectionError;
                 if (errors.length > 0) {
                     console.error(...errors);
+                    this.onAMDInjectError();
                 } else {
                     onAMDInjected && onAMDInjected();
                     this.onAMDInjected();
@@ -127,6 +129,10 @@ export class ReactModuleBase extends Component {
         // override this method in the sub class
     }
 
+    onAMDLoadError() {
+        // override this method in the sub class
+    }
+
     /**
     * override this method in the sub class to initiate actions once all
     * the AMD are injected successfully.
@@ -135,6 +141,10 @@ export class ReactModuleBase extends Component {
         // override this method in the sub class
     }
 
+    onAMDInjectError() {
+        // override this method in the sub class
+    }
+    
     /**
      * asynchronous module definition
      */

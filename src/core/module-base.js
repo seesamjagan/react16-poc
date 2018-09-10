@@ -5,7 +5,20 @@ import { ErrorBoundary } from './error-boundry';
 
 const localeManager = LocaleManager.getInstance();
 
+var moduleLoaderInstance;
+
 class ReactModuleLoader {
+
+    constructor() {
+        if(moduleLoaderInstance) {
+            return moduleLoaderInstance;
+        }
+        moduleLoaderInstance = this;
+    }
+
+    static get instanse() {
+        return moduleLoaderInstance || new ReactModuleLoader();
+    }
 
     load = ({ module, loader, callback }) => {
         return loader().then(moduleDef => {
@@ -38,13 +51,13 @@ export class ReactModuleBase extends Component {
         if (depends && depends.length) {
             this.depends = depends;
             state.isAMDReady = false;
-            this.preLoadAMD(depends);
         }
         this.state = state;
+        this[__loader__] = ReactModuleLoader.instanse;
     }
 
     load = (depends) => {
-        const amd = this[__loader__] = (this[__loader__] || new ReactModuleLoader());
+        const amd = this.amd;
         return Promise.all(depends.map(payload => {
             if (payload instanceof BundleVo) {
                 // if the dependency is a locale bundle
@@ -187,6 +200,11 @@ export class ReactModuleBase extends Component {
         //logErrorToMyService(error, info);
     }
 
+    componentDidMount() {
+        if(this.depends && this.depends.length > 0) {
+            this.preLoadAMD(this.depends);
+        }
+    }
 
     render() {
 

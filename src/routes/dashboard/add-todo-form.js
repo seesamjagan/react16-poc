@@ -19,6 +19,19 @@ const TODO_STATUS_ICON = {
     4: "❌",
 }
 
+const TODO_TYPE_ICON = {
+    0: "🔖",
+    1: "🐞"
+}
+
+const TODO_PRIORITY = {
+    BLOCKER: 0,
+    CRITICAL: 1,
+    HIGH: 2,
+    NORMAL: 3,
+    LOW: 4
+}
+
 export class AddTodoForm extends core.P3ComponentBase {
 
     constructor(props, context) {
@@ -91,8 +104,8 @@ export class AddTodoForm extends core.P3ComponentBase {
             });
     }
 
-    onAIStatusChange = (e, todo) => {
-        core.Fetch.post('/todo/update', { ...todo, status: +e.target.value })
+    onAIChange = (todo) => {
+        core.Fetch.post('/todo/update', { ...todo })
             .then(result => {
                 if (result.status) {
                     this.loadTODO();
@@ -105,7 +118,7 @@ export class AddTodoForm extends core.P3ComponentBase {
     }
 
     addNewTodoInDB = (newTodoItem) => {
-        core.Fetch.post('/todo/add', { label: newTodoItem, status: TODO_STATUS.OPEN })
+        core.Fetch.post('/todo/add', { title: newTodoItem, status: TODO_STATUS.OPEN })
         .then(result => {
             if (result.status) {
                 this.loadTODO();
@@ -146,7 +159,7 @@ export class AddTodoForm extends core.P3ComponentBase {
                         <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
                             <div>
                                 {message && <div>{message}</div>}
-                                {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onChange={(e) => this.onAIStatusChange(e, todo)} />)}
+                                {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onTaskChange={this.onAIChange} />)}
                                 {visibleAI.length === 0 && <div>Nothing to show!</div>}
                             </div>
                         </fieldset>
@@ -181,20 +194,48 @@ const FilterForm = ({ options, onChange, count, total }) => {
             { options.map((opt, key) => <option key={key} value={opt.value}>{opt.label}</option>) }
             {/*Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)*/}
         </select>
-        <spn> Showing: </spn>
+        <span> Showing: </span>
         <span>{count}</span>
         <span> of </span>
         <span>{total}</span>
     </div>
 }
 
-const TodoItem = ({ todo, onClick, onChange }) => {
+const TodoItem = ({ todo, onClick, onTaskChange}) => {
+    const clone = {...todo};
+    const onChange = ({target}) => {
+        clone[target.name] = +target.value;
+    }
+    const onTitleChange = ({target}) => {
+        clone.title = target.value;
+    }
+
+    const onApply = e => {
+        onTaskChange(clone);
+    }
+
     return <div className='todo-item' onClick={onClick}>
-        <select defaultValue={todo.status} onChange={onChange}>
+        <select defaultValue={todo.status} onChange={onChange} name='status'>
             {Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)}
         </select> 
-         {todo.label} -Created On {new Date(+todo.ts).toDateString()}
+        <select defaultValue={todo.type} onChange={onChange} name='type'>
+            {Object.keys(TODO_TYPE_ICON).map(key => <option key={key} value={key}>{TODO_TYPE_ICON[key]}</option>)}
+        </select> 
+        <select defaultValue={todo.priority} onChange={onChange} name='priority'>
+            {Object.keys(TODO_PRIORITY).map(key => <option key={key} value={TODO_PRIORITY[key]}>{key}(P{TODO_PRIORITY[key]})</option>)}
+        </select> 
+        <input type="text" defaultValue={todo.title} onChange={onTitleChange} style={{minWidth: '550px'}} />
+        <button onClick={onApply}>Apply</button>
     </div>
 }
 
 export default AddTodoForm;
+
+
+/**
+ * AVOID using the following methods.
+ * 
+ * componentWillMount
+ * componentWillReceiveProps
+ * componentWillUpdate
+ */

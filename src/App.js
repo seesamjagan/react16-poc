@@ -4,9 +4,9 @@ import * as core from './core';
 
 const APP_NAME = 'Pivot3 Management Application v11.0';
 
-const Logo = (props) => ( <a href="//pivot3.com" target="Pivot3.inc" className="p3-logo" title={APP_NAME}>Pivot3</a>);
+const Logo = (props) => (<a href="//pivot3.com" target="Pivot3.inc" className="p3-logo" title={APP_NAME}>Pivot3</a>);
 
-const AppHeader = ({ navItems, navBar:P3NavBar }, context) => (
+const AppHeader = ({ navItems, navBar: P3NavBar }, context) => (
   <header className="p3-app-header">
     <P3NavBar items={navItems} logo={Logo} />
   </header>
@@ -47,12 +47,14 @@ class App extends core.P3ComponentBase {
     console.log('App UI Rendered', this.props);
     return (
       <Router>
-        <div className="p3-app">
-          <Route path="/" render={props => this.renderHeaderUI(props)} />
-          <Switch>
-            {core.appRouteConfig.map(route => <Route {...route} key={route.path} />)}
-          </Switch>
-        </div>
+        <React.StrictMode>
+          <div className="p3-app">
+            <Route path="/" render={props => this.renderHeaderUI(props)} />
+            <Switch>
+              {core.appRouteConfig.map(route => <Route {...route} key={route.path} />)}
+            </Switch>
+          </div>
+        </React.StrictMode>
       </Router>
     );
   }

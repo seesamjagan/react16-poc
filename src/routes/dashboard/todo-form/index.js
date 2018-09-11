@@ -1,14 +1,15 @@
 import React from 'react';
-import * as core from '../../core';
+import * as core from '../../../core';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
 const TODO_STATUS = {
-    OPEN: 0, // ⏲
-    INPROGRESS: 1, // 🔥 ⏳
-    DONE: 2, // ✅
-    HOLD: 3, // ⏸
-    CANCELLED: 4 // ❌
+    ALL: -1,
+    OPEN: 0,
+    INPROGRESS: 1,
+    DONE: 2,
+    HOLD: 3,
+    CANCELLED: 4
 }
 
 const TODO_STATUS_ICON = {
@@ -32,15 +33,15 @@ const TODO_PRIORITY = {
     LOW: 4
 }
 
-export class AddTodoForm extends core.P3ComponentBase {
+export class TodoForm extends core.P3ComponentBase {
 
     constructor(props, context) {
         super(props, context, [...deps]);
 
         this.state = Object.assign(this.state, {
-            actions: [{ label: 'Add', enabled: false }, { label: 'Reset', enabled: true }],
+            actions: this.getActions(),
             todos: [],
-            filterStatus: -1,
+            filterStatus: TODO_STATUS.INPROGRESS,
             showError: false,
             errorMessage: '',
             errorTitle: '',
@@ -48,6 +49,8 @@ export class AddTodoForm extends core.P3ComponentBase {
 
         this.newTodoInput = React.createRef();
     }
+
+    getActions = () => [{ label: 'Add', enabled: true }, { label: 'Export' }, { label: 'Reset', enabled: true }];
 
     onAMDLoadComplete() {
         // All Dependencise loaded.
@@ -57,8 +60,7 @@ export class AddTodoForm extends core.P3ComponentBase {
 
     onNewTodoItemChange = event => {
         let newTodoItem = event.target.value;
-        let actions = [{ label: 'Add', enabled: newTodoItem.trim().length > 0 }, { label: 'Reset', enabled: true }]
-        this.setState({ newTodoItem, actions });
+        this.setState({ newTodoItem });
     }
 
     onAddTodoFormAction = action => {
@@ -69,14 +71,21 @@ export class AddTodoForm extends core.P3ComponentBase {
             case 'Reset':
                 this.resetForm();
                 break;
+            case 'Export':
+                this.exportTodos(this.state.todos);
+                break;
             default:
             // Do nothing!
         }
     }
 
     addNewTodo = () => {
-        this.addNewTodoInDB(this.state.newTodoItem);
-        this.resetForm();
+        if (this.state.newTodoItem.trim().length > 0) {
+            this.addNewTodoInDB(this.state.newTodoItem);
+            this.resetForm();
+        } else {
+
+        }
     }
 
     onNewTodoKeyUp = event => {
@@ -86,9 +95,27 @@ export class AddTodoForm extends core.P3ComponentBase {
     }
 
     resetForm = () => {
-        this.setState({ newTodoItem: '', actions: [{ label: 'Add', enabled: false }, { label: 'Reset', enabled: true }] });
+        this.setState({ newTodoItem: '' });
         this.newTodoInput.current.value = '';
         this.newTodoInput.current.focus();
+    }
+
+    exportTodos = (todos) => {
+        if (todos.length > 0) {
+            let encoding = 'data:text/json;charset=utf-8,';
+            let dataURL = encodeURI(encoding + JSON.stringify(todos, null, "\t"));
+            let link = document.createElement("a");
+            link.setAttribute("href", dataURL);
+            link.setAttribute("download", "my_todos.json");
+            link.innerHTML = ".";
+            document.body.appendChild(link); // Required for FF
+
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+            });
+        }
     }
 
     loadTODO = () => {
@@ -99,7 +126,7 @@ export class AddTodoForm extends core.P3ComponentBase {
                 let todos = response.status ? response.data : [];
                 this.setState({
                     todos,
-                    message  
+                    message
                 });
             });
     }
@@ -119,15 +146,15 @@ export class AddTodoForm extends core.P3ComponentBase {
 
     addNewTodoInDB = (newTodoItem) => {
         core.Fetch.post('/todo/add', { title: newTodoItem, status: TODO_STATUS.OPEN })
-        .then(result => {
-            if (result.status) {
-                this.loadTODO();
-            } else {
-                this.setState({
-                    showError: true, errorMessage: result.message, errorTitle: 'Add New'
-                });
-            }
-        });
+            .then(result => {
+                if (result.status) {
+                    this.loadTODO();
+                } else {
+                    this.setState({
+                        showError: true, errorMessage: result.message, errorTitle: 'Add New'
+                    });
+                }
+            });
     }
 
     onFilterChange = e => {
@@ -140,35 +167,36 @@ export class AddTodoForm extends core.P3ComponentBase {
     renderUI() {
 
         const { actions, message, todos, showError, errorTitle, errorMessage, filterStatus } = this.state;
-        const visibleAI = todos.filter(ai=>filterStatus===-1 || ai.status===filterStatus);
-        const options = Object.keys(TODO_STATUS_ICON).map(key=>({value: +key}));
-        
-        options.forEach(option=>{
-            option.label = `${TODO_STATUS_ICON[option.value]} (${todos.filter(ai=>ai.status===option.value).length}) `;
+        const visibleAI = todos.filter(ai => filterStatus === -1 || ai.status === filterStatus);
+        const options = Object.keys(TODO_STATUS_ICON).map(key => ({ value: +key }));
+
+        options.forEach(option => {
+            option.label = `${TODO_STATUS_ICON[option.value]} (${todos.filter(ai => ai.status === option.value).length}) `;
         });
 
-        options.unshift({value: -1, label: 'All('+todos.length+')'});
+        options.unshift({ value: -1, label: 'All(' + todos.length + ')' });
 
         return (
             <div>
                 <this.amd.components.P3MessageBox title="Add Todo" message="Add a new Todo Action Item." actions={actions} onAction={this.onAddTodoFormAction}>
                     <div>
                         <fieldset>
-                            <FilterForm options={options} onChange={this.onFilterChange} count={visibleAI.length} total={todos.length} />
-                        </fieldset>
-                        <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
-                            <div>
-                                {message && <div>{message}</div>}
-                                {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onTaskChange={this.onAIChange} />)}
-                                {visibleAI.length === 0 && <div>Nothing to show!</div>}
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <label>Todo Item</label>
+                            <label>Add New Todo Item</label>
                             <input ref={this.newTodoInput}
                                 type="text"
                                 onChange={this.onNewTodoItemChange}
                                 onKeyUp={this.onNewTodoKeyUp} />
+                        </fieldset>
+
+                        <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
+                            <div>
+                                {message && <div>{message}</div>}
+                                <TodoItemList visibleAI={visibleAI} onAIChange={this.onAIChange} />
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <FilterForm options={options} onChange={this.onFilterChange} defaultValue={TODO_STATUS.INPROGRESS} count={visibleAI.length} total={todos.length} />
                         </fieldset>
                     </div>
                 </this.amd.components.P3MessageBox>
@@ -186,27 +214,40 @@ export class AddTodoForm extends core.P3ComponentBase {
     }
 }
 
+const getVisibleTodos = (todos, statusFilter) => {
+    return todos.filter(todo => statusFilter === TODO_STATUS.ALL || todo.status === statusFilter);
+}
 
-const FilterForm = ({ options, onChange, count, total }) => {
-    return <div className='todo-item'>
-        <span>Show </span>
-        <select defaultValue='-1' onChange={onChange}>
-            { options.map((opt, key) => <option key={key} value={opt.value}>{opt.label}</option>) }
-            {/*Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)*/}
-        </select>
-        <span> Showing: </span>
-        <span>{count}</span>
-        <span> of </span>
-        <span>{total}</span>
+const mapStateToProps = state=> {
+    return {
+        todos: getVisibleTodos(state.todos, state.statusFilter)
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAIChange: todo => {
+            dispatch(updateTodo(todo));
+        }
+    }
+}
+const updateTodo = todo => {
+    todo;// TODO :: save in db
+}
+
+const TodoItemList = ({visibleAI=[], onAIChange}) => {
+    return <div>
+        {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onTaskChange={onAIChange} />)}
+        {visibleAI.length === 0 && <div>Nothing to show!</div>}
     </div>
 }
 
-const TodoItem = ({ todo, onClick, onTaskChange}) => {
-    const clone = {...todo};
-    const onChange = ({target}) => {
+const TodoItem = ({ todo, onClick, onTaskChange }) => {
+    const clone = { ...todo };
+    const onChange = ({ target }) => {
         clone[target.name] = +target.value;
     }
-    const onTitleChange = ({target}) => {
+    const onTitleChange = ({ target }) => {
         clone.title = target.value;
     }
 
@@ -217,19 +258,32 @@ const TodoItem = ({ todo, onClick, onTaskChange}) => {
     return <div className='todo-item' onClick={onClick}>
         <select defaultValue={todo.status} onChange={onChange} name='status'>
             {Object.keys(TODO_STATUS_ICON).map(key => <option key={key} value={key}>{TODO_STATUS_ICON[key]}</option>)}
-        </select> 
+        </select>
         <select defaultValue={todo.type} onChange={onChange} name='type'>
             {Object.keys(TODO_TYPE_ICON).map(key => <option key={key} value={key}>{TODO_TYPE_ICON[key]}</option>)}
-        </select> 
+        </select>
         <select defaultValue={todo.priority} onChange={onChange} name='priority'>
             {Object.keys(TODO_PRIORITY).map(key => <option key={key} value={TODO_PRIORITY[key]}>{key}(P{TODO_PRIORITY[key]})</option>)}
-        </select> 
-        <input type="text" defaultValue={todo.title} onChange={onTitleChange} style={{minWidth: '550px'}} />
+        </select>
+        <input type="text" defaultValue={todo.title} onChange={onTitleChange} style={{ minWidth: '550px' }} />
         <button onClick={onApply}>Apply</button>
     </div>
 }
 
-export default AddTodoForm;
+const FilterForm = ({ options, onChange, count, total, defaultValue = -1 }) => {
+    return <div className='todo-item'>
+        <span>Show </span>
+        <select defaultValue={defaultValue} onChange={onChange}>
+            {options.map((opt, key) => <option key={key} value={opt.value}>{opt.label}</option>)}
+        </select>
+        <span> Showing: </span>
+        <span>{count}</span>
+        <span> of </span>
+        <span>{total}</span>
+    </div>
+}
+
+export default TodoForm;
 
 
 /**

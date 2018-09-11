@@ -3,25 +3,25 @@ poc app on react js 16.x with routing, lazy loading, localization, cra, scss
 
 Mission is to implement the following concepts in the application
 
-
-- [x] Router ✅ (used react-router)
-- [ ] Redux (with middleware) ⏳ 
-- [x] CSS Pre-Processor ✅ (used SCSS)
-- [x] fetch & promise ✅
+- [x] Router (used react-router)
+- [ ] Redux (with middleware, redux-actions, redux-thunk or redux-sage) ⏳ 
+- [x] CSS Pre-Processor (used SCSS)
+- [x] fetch & promise 
 - [ ] React-Form ⏲
-- [x] Modules/Code Splitting/AMD/locale ✅ (used react-loadable)
-- [x] ErrorBoundries ✅
+- [x] Modules/Code Splitting/AMD/locale (used react-loadable)
+- [x] ErrorBoundries 
 - [ ] Router in Plugin ⏲
 - [ ] context API for Plugin vs Standalone ⏲
-- [x] Base Component with Lang✅, ErrorBoundries ✅
-- [x] Base popup with Lang✅, ErrorBoundries✅
+- [x] Base Component with Lang, ErrorBoundries 
+- [x] Base popup with Lang, ErrorBoundries
 - [ ] How are we going to load ADM popup's (using redux action or event-pool class?)? ⏲
 - [ ] use codemod script for changing/update depcriated lifecycle hooks (for React 16.x canges) ⏲
-- [ ] Portals for Popup ✅, Toaster ⏲
+- [x] Portals for Popup,
+- [ ] Portals for Toaster ⏲
 - [ ] React Transitions ⏲
 - [ ] Scrollbar component ⏲
-- [x] Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment).✅ 
-- [x] Load on-demand AMD package (in P3ModuleBase like popup definitions, when demanded) ✅
+- [x] Generic Alert/Confirmation/Question popup component (Just Like Flex Alert Compoment).
+- [x] Load on-demand AMD package (in P3ModuleBase like popup definitions, when demanded).
 
 
 Ref Links
@@ -52,4 +52,5 @@ https://sass-lang.com/guide
 https://robots.thoughtbot.com/controlling-color-with-sass-color-functions
 
 SQLite: 
+https://www.tutlane.com/tutorial/sqlite/sqlite-tutorial
 http://www.sqlitetutorial.net/sqlite-nodejs/

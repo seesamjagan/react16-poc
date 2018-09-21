@@ -1,0 +1,86 @@
+.p3-data-grid {
+    display: grid;
+    border-top: solid thin #999;
+    border-bottom: solid thin #999;
+    .p3-data-grid-header {
+        background-color: #999;
+        display: grid;
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+    }
+    .p3-data-grid-body {
+        overflow-y: scroll;
+        grid-column: 1 / 1;
+        grid-row: 2 / 3;
+        .p3-row:hover {
+            background-color: rgb(97, 174, 226);
+        }
+        .p3-row:last-child {
+            border-bottom: none;
+        }
+    }
+    .p3-data-grid-footer {
+        background-color: #999;
+        display: grid;
+        grid-column: 1 / 1;
+        grid-row: 3 / -1;
+    }
+    .p3-row {
+        display: grid;
+        align-items: center;
+        border-bottom: solid thin #CCC;
+        min-height: 24px;
+        box-sizing: border-box;
+        .p3-cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-left: thin solid white;
+            border-right: thin solid #999;
+        }
+        .p3-head-cell {
+            color: #FFF;
+            font-weight: bold;
+            display: grid;
+            align-items: center;
+            grid-template-columns: 1fr auto;
+            border: none;
+            .p3-head-title {
+                max-height: 40px;
+            }
+            .p3-head-cell-controls {
+                display: grid;
+                grid-auto-flow: column;
+                .p3-sort-icon {
+                    color: #EEE;
+                    width: auto;
+                }
+                .p3-search-icon {
+                    color: initial;
+                }
+            }
+        }
+        .p3-data-cell {
+            color: initial;
+        }
+        .p3-foot-cell {
+            color: #FFF;
+            font-weight: bold;
+        }
+    }
+    .p3-placeholder-overlay {
+        display: grid;
+        background: rgba(0, 0, 0, 0.35);
+        grid-column: 1 / 1;
+        grid-row: 2 / 3;
+        align-items: center;
+        justify-items: center;
+        z-index: 1;
+    }
+    .p3-placeholder-overlay>div {
+        background-color: rgba(0, 0, 0, 0.25);
+        color: #FFF;
+        border-radius: 6px;
+        padding: 4px;
+        box-shadow: 0px 0px 3px 2px rgba(255, 255, 255, 0.43);
+    }
+}

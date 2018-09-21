@@ -168,11 +168,15 @@ export class TodoForm extends core.P3ComponentBase {
 
         const { actions, message, todos, showError, errorTitle, errorMessage, filterStatus } = this.state;
         const visibleAI = todos.filter(ai => filterStatus === -1 || ai.status === filterStatus);
-        const options = Object.keys(TODO_STATUS_ICON).map(key => ({ value: +key }));
-
+        const options = Object.keys(TODO_STATUS_ICON).map((key) => ({ 
+            value: +key,
+            label: `${TODO_STATUS_ICON[+key]} (${todos.filter(ai => ai.status === +key).length})`
+        }));
+        /*
         options.forEach(option => {
             option.label = `${TODO_STATUS_ICON[option.value]} (${todos.filter(ai => ai.status === option.value).length}) `;
         });
+        */
 
         options.unshift({ value: -1, label: 'All(' + todos.length + ')' });
 
@@ -191,7 +195,7 @@ export class TodoForm extends core.P3ComponentBase {
                         <fieldset style={{ maxHeight: '200px', overflow: "auto" }}>
                             <div>
                                 {message && <div>{message}</div>}
-                                <TodoItemList visibleAI={visibleAI} onAIChange={this.onAIChange} />
+                                <TodoItemList items={visibleAI} onAIChange={this.onAIChange} />
                             </div>
                         </fieldset>
 
@@ -214,10 +218,10 @@ export class TodoForm extends core.P3ComponentBase {
     }
 }
 
+/*
 const getVisibleTodos = (todos, statusFilter) => {
     return todos.filter(todo => statusFilter === TODO_STATUS.ALL || todo.status === statusFilter);
 }
-
 const mapStateToProps = state=> {
     return {
         todos: getVisibleTodos(state.todos, state.statusFilter)
@@ -234,11 +238,12 @@ const mapDispatchToProps = dispatch => {
 const updateTodo = todo => {
     todo;// TODO :: save in db
 }
+*/
 
-const TodoItemList = ({visibleAI=[], onAIChange}) => {
+const TodoItemList = ({items=[], onAIChange}) => {
     return <div>
-        {visibleAI.map((todo) => <TodoItem key={todo.id} todo={todo} onTaskChange={onAIChange} />)}
-        {visibleAI.length === 0 && <div>Nothing to show!</div>}
+        {items.map((todo) => <TodoItem key={todo.id} todo={todo} onTaskChange={onAIChange} />)}
+        {items.length === 0 && <div>Nothing to show!</div>}
     </div>
 }
 

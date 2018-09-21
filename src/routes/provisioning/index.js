@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import * as core from '../../core';
+import { Users } from './users';
 
 const deps = [core.actionAMDPayload, core.modelAMDPayload, core.componentsAMDPayload];
 
@@ -13,7 +14,7 @@ const ROUTES = {
     CLOUD: 'cloud',
 };
 const routeConfig = [
-    {path: getPath(ROUTES.ACUITY), component: ()=><div className="p3-show-me">Acuity View</div>},
+    {path: getPath(ROUTES.ACUITY), component: ()=><div className="p3-show-me"><h2>Acuity View</h2><Users /></div>},
     {path: getPath(ROUTES.HCI), component: ()=><div className="p3-show-me">HCI View</div>},
     {path: getPath(ROUTES.N5), component: ()=><div className="p3-show-me">N5 View</div>},
     {path: getPath(ROUTES.CLOUD), component: ()=><div className="p3-show-me">Cloud View</div>},
